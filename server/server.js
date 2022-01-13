@@ -6,7 +6,8 @@ const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const port = parseInt(process.env.PORT || '3000');
+// const port = parseInt(process.env.PORT || '3000');
+const port = '3000';
 const host = '0.0.0.0';
 
 const app = next({
@@ -33,6 +34,10 @@ const options = {
     }));
 
     expressApp.get('*', (req, res) => {
+        return handle(req, res)
+    });
+
+    expressApp.post('*', (req, res) => {
         return handle(req, res)
     });
 

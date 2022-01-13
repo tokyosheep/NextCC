@@ -19,11 +19,13 @@ const elms = data => {
                   const elm = await res.json();
                   console.log(elm);
                   console.log(elm.element.elements);
+                  /*
                   setLibrary({
                     name: lib.name,
                     id: lib.id,
                     elements: elm.element.elements.map(e => ({ name: e.name, id: e.id, rendition: e.thumbnail.rendition }))
                   });
+                  */
                 }}>{lib.name}</button>
               </li>
             );

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 
 dotenv.config();
@@ -33,31 +34,62 @@ const callbackLogin = async(req,res) => {
   }
 }
 
-export default async function handler(req,res){
-    console.log(req.query.id);
+const otherInquiry = async(req,res) => {
+  const options = {
+    headers: {
+      "x-api-key": process.env.API_KEY,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+  try{
+      const response = await axios.get(baseURL, options);
+      res.json({
+        title: 'Creative Cloud Libraries API',
+        libraries: response.data.libraries
+      });
+  }catch(error){
+      res.json({
+        title: 'Creative Cloud Libraries API',
+        libraries: undefined
+      });
+  }
+}
+
+const getElement = async(req,res) =>{
+  console.log(req.body);
+  const options = {
+    headers: {
+      'x-api-key': process.env.API_KEY,
+      Authorization: `Bearer ${accessToken}`
+    }
+  };
+  try {
+    const response = await axios.get(`${baseURL}/${req.body.id}/elements`, options);
+    console.log(response);
+    res.json({ element: response.data });
+  } catch (e) {
+    console.log(e);
+    res.send('error');
+  }
+}
+
+export default async function handler(req:NextApiRequest,res:NextApiResponse){
     const id = req.query.id;
-    if(id==='login'){
+    switch(id){
+      case 'login':
         loginAdobeCC(req,res);
-    } else if(id==='callback'){
+        break;
+
+      case 'callback':
         await callbackLogin(req,res);
-    }else{
-        const options = {
-          headers: {
-            "x-api-key": process.env.API_KEY,
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-        try{
-            const response = await axios.get(baseURL, options);
-            res.json({
-              title: 'Creative Cloud Libraries API',
-              libraries: response.data.libraries
-            });
-        }catch(error){
-            res.json({
-              title: 'Creative Cloud Libraries API',
-              libraries: undefined
-            });
-        }
+        break;
+
+      case 'element':
+        await getElement(req,res);
+        break;
+
+      default:
+        otherInquiry(req,res);
+        break;
     }
 }

@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from '../redux/app/hooks';
+import { setLibraies } from '../redux/features/libraries/librarySlice';
+
+import ElementList from '../components/elementList';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-const elms = data => {
+const elms = (data,func) => {
     if(data?.libraries){
         const librarieList = data.libraries.map(lib => {
             return (
               <li key={lib.id}>
                 <button onClick={async () => {
-                  const res = await fetch('https://localhost:3000/element', {
+                  const res = await fetch('../api/ccAccess/element', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json'
@@ -17,14 +21,11 @@ const elms = data => {
                   });
                   const elm = await res.json();
                   console.log(elm);
-                  console.log(elm.element.elements);
-                  /*
-                  setLibrary({
+                  func({
                     name: lib.name,
                     id: lib.id,
                     elements: elm.element.elements.map(e => ({ name: e.name, id: e.id, rendition: e.thumbnail.rendition }))
                   });
-                  */
                 }}>{lib.name}</button>
               </li>
             );
@@ -47,6 +48,10 @@ const elms = data => {
 }
 
 const Page = () =>{
+    const libraries = useAppSelector(state => state.libraries);
+    const dispatch = useAppDispatch();
+    const librariesFromServer = data => dispatch(setLibraies(data));
+    console.log(libraries);
     const [data, setData ] = useState();
     useEffect(()=>{
         (async()=>{
@@ -58,7 +63,8 @@ const Page = () =>{
 
     return(
         <div>
-            {elms(data)}
+            {elms(data,librariesFromServer)}
+            {<ElementList library={libraries.value} />}
         </div>
     )
 }

@@ -1,11 +1,17 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-
+/*
+export type Representation = {
+    representName:string|null,
+    
+}
+*/
 export type ElementProps = {
     name:string,
     id:string,
-    rendition:string
+    rendition:string,
+    cloudPath:string,
 }
 
 export type LibraryProps = {

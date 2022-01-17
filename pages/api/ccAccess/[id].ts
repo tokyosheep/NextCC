@@ -1,7 +1,12 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getBase64dataUrl } from './fileSystem';
 import fs from 'fs';
+import path from 'path';
+
+const dir_home = process.env[process.platform == `win32` ? `USERPROFILE` : `HOME`];
+const dir_desktop = path.join(dir_home, `Desktop`);//デスクトップパス
 
 dotenv.config();
 
@@ -55,6 +60,8 @@ const otherInquiry = async(req,res) => {
   }
 }
 
+
+/*http://gaforum.jp/?s=gaiq query parameter */
 const getElement = async(req,res) =>{
   console.log(req.body);
   const options = {
@@ -64,8 +71,7 @@ const getElement = async(req,res) =>{
     }
   };
   try {
-    const response = await axios.get(`${baseURL}/${req.body.id}/elements`, options);
-    console.log(response);
+    const response = await axios.get(`${baseURL}/${req.body.id}/elements/?selector=details`, options);
     res.json({ element: response.data });
   } catch (e) {
     console.log(e);
@@ -73,8 +79,71 @@ const getElement = async(req,res) =>{
   }
 }
 
+const getElementRepresent = async (req,res) =>{
+  const options = {
+    headers: {
+      'x-api-key': process.env.API_KEY,
+      Authorization: `Bearer ${accessToken}`
+    }
+  };
+  try{
+    const response = await axios.get(`${baseURL}/${req.body.id}/elements/?selector=representations`, options);
+    res.json({ element: response.data });
+  }catch(e){
+    console.log(e);
+    res.json({error:'error'});
+  }
+}
+
+const getImage = async (req,res) => {
+  let { url } = req.body;
+  url = url.slice(0, url.lastIndexOf("/"));
+  console.log(url);
+  const options:any = {
+    responseType: 'arraybuffer',
+    headers: {
+      'x-api-key': process.env.API_KEY,
+      Authorization: `Bearer ${accessToken}`
+    },
+  };
+  try{
+    const thumb = await axios.get(url, options);
+    console.log(thumb);
+    const dataUrl = getBase64dataUrl(thumb);
+    console.log(dataUrl);
+    res.set("Content-Type", thumb.headers["content-type"]);
+    res.set("Content-Length", thumb.headers["content-length"]);
+    const r = thumb?.data === undefined ? null : thumb?.data;
+    res.json({v:dataUrl});
+  }catch(e){
+    console.log(e);
+    res.json({v:'error'});
+  }
+}
+
+const getFile = async (req,res) => {
+  const options:any = {
+    responseType: 'arraybuffer',
+    headers: {
+      'x-api-key': process.env.API_KEY,
+      Authorization: `Bearer ${accessToken}`
+    },
+  };
+  const { url } = req.body;
+  try{
+    const response = await axios.get(url, options);
+    console.log(response);
+    //await fs.promises.writeFile(`${dir_desktop}/aa.png`,response.data);
+    res.json({data:response.data});
+  }catch(e){
+    console.log(e);
+    res.json(e);
+  }
+}
+
 export default async function handler(req:NextApiRequest,res:NextApiResponse){
     const id = req.query.id;
+    console.log(id);
     switch(id){
       case 'login':
         loginAdobeCC(req,res);
@@ -86,6 +155,18 @@ export default async function handler(req:NextApiRequest,res:NextApiResponse){
 
       case 'element':
         await getElement(req,res);
+        break;
+
+      case 'element-represent':
+        await getElementRepresent(req,res);
+        break;
+
+      case 'cc-libraries-images':
+        await getImage(req,res);
+        break;
+
+      case 'get-libraries-file':
+        await getFile(req,res);
         break;
 
       default:

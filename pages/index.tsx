@@ -12,7 +12,7 @@ const elms = (data,func) => {
             return (
               <li key={lib.id}>
                 <button onClick={async () => {
-                  const res = await fetch('../api/ccAccess/element', {
+                  const res = await fetch('../api/ccAccess/element-represent', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json'
@@ -24,8 +24,36 @@ const elms = (data,func) => {
                   func({
                     name: lib.name,
                     id: lib.id,
-                    elements: elm.element.elements.map(e => ({ name: e.name, id: e.id, rendition: e.thumbnail.rendition }))
+                    elements: elm.element.elements.map(e => ({ 
+                      name: e.name, id: 
+                      e.id, 
+                      rendition: e.thumbnail.rendition,
+                      cloudPath: e.representations[0].storage_href
+                    }))
                   });
+
+                }}>get repsent</button>
+                <button onClick={async () => {
+                  const res = await fetch('../api/ccAccess/element', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: lib.id })
+                  });
+                  const elm = await res.json();
+                  console.log(elm);
+                  /*
+                  func({
+                    name: lib.name,
+                    id: lib.id,
+                    elements: elm.element.elements.map(e => ({ 
+                      name: e.name, id: e.id, 
+                      rendition: e.thumbnail.rendition,
+                      cloudPath: e._links['http://ns.adobe.com/melville/rel/path'].href
+                    }))
+                  });
+                  */
                 }}>{lib.name}</button>
               </li>
             );

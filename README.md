@@ -1,34 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Creative Cloud Libraries API on Next.js(React)
 
-## Getting Started
+this is an example of how to write Adobe Creative Cloud Libraries API on Next.js
+Creative Cloud Libraries API can connec CC server through OAuth authorization.
+user can see its own libraries. even it can upload image and get asset.
+but I think many developers are curious to run API on React base system. 
 
-First, run the development server:
+**I refered to the sample code amandahuarng wrote**
+ 
+[sample code](https://github.com/AdobeDocs/cc-libraries-api-samples/tree/main/oauth-node-cclibs)
+[her blog](https://medium.com/adobetech/node-js-oauth-2-0-integration-with-creative-cloud-libraries-api-a7b2b2992897)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+this sample based on ejs and Express not React but to me , it was really helpful to understand Adobe Creative Cloud Libraries API.
+I recommend read it before launch my code.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# what user this code for
+you need basic knowledge below
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+1. Next.js
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+3. Node.js
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+4. html css
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## how does it run
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[first you need to register Adobe console as a developer](https://www.adobe.io/console)
+after register acoound , create project. you can check how create your Creative Cloud Libraries API 
+project
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+you can read more detail about console [here.](https://www.adobe.io/developer-console/docs/guides/getting-started/)
 
-## Deploy on Vercel
+if you create your project , get your Client ID (API key) and Client Secret (API secret) , and fill key in .ext.example file
+and rename .ext.example to .ext file.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**do not publish your API KEY anywhere**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+you have to run https(not http) server so you need certificates. install [mkcert](https://github.com/FiloSottile/mkcert) and generate certificates.
+
+of course do not forget install node_modules. typeing "npm install" in this directory. 
+
+and finally you cab run server. typeing "npm run dev" and server will be running.
+and access "https://localhost:3000/" you'll see how code runs.
+
+[here](https://medium.com/adobetech/node-js-oauth-2-0-integration-with-creative-cloud-libraries-api-a7b2b2992897)
+
+**please check the .gitignore . it inculdes localhost(certificate file) and .env file or not**
+do not upload these files.

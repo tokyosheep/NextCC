@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import librariesSlice from '../features/libraries/librarySlice';
+import librarySlice from '../features/libraries/librarySlice';
+import librariesSlice from '../features/libraries/librariesSlice';
 
 export const store = configureStore({
     reducer: {
+        library: librarySlice,
         libraries: librariesSlice
     }
 });

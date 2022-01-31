@@ -4,6 +4,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getBase64dataUrl } from './fileSystem';
 import fs from 'fs';
 import path from 'path';
+import FormData from 'form-data';
+import multer from 'multer';
+const upload = multer ({ dest: './temp' });
+/*
+ multer makes img file from input form on browser side available
+*/
 
 const dir_home = process.env[process.platform == `win32` ? `USERPROFILE` : `HOME`];
 const dir_desktop = path.join(dir_home, `Desktop`);//デスクトップパス
@@ -14,6 +20,16 @@ const baseURL = 'https://cc-libraries.adobe.io/api/v1/libraries';
 const scopes = 'openid,creative_sdk,profile,address,AdobeID,email,cc_files,cc_libraries';
 const redirectUri = 'https://localhost:3000/api/ccAccess/callback';
 let accessToken = '';
+
+const logoutAdobeCC = async (req,res) => {
+  try{
+    accessToken = '';
+    res.redirect('https://localhost:3000/logout');
+  }catch(e){
+    console.log(e);
+    res.redirect('https://localhost:3000');
+  }
+}
 
 const loginAdobeCC = async (req,res) => {
   try{
@@ -130,10 +146,14 @@ const getFile = async (req,res) => {
     },
   };
   const { url } = req.body;
+  const { name } = req.body;
+  console.log('-----');
+  console.log(url);
+  console.log(name);
   try{
     const response = await axios.get(url, options);
     console.log(response);
-    //await fs.promises.writeFile(`${dir_desktop}/aa.png`,response.data);
+    await fs.promises.writeFile(`${dir_desktop}/${name}`,response.data);
     res.json({data:response.data});
   }catch(e){
     console.log(e);
@@ -141,28 +161,146 @@ const getFile = async (req,res) => {
   }
 }
 
-export default async function handler(req:NextApiRequest,res:NextApiResponse){
-    const id = req.query.id;
-    console.log(id);
+const uploadAsset = async (libraryUrn, file, req) =>{
+  /*
+
+  I warn you
+  this method can upload within 5MB size file
+  some file over 5MB, you have to find other way
+
+  */
+
+  const imgData = (() => {
+    try{
+      const imgData = fs.createReadStream(file.path);
+      return imgData;
+    }catch(e){
+      console.log('error');
+      console.log(e.message);
+      return null
+    }
+  })();
+  if(imgData===null)return null;
+  const formData = new FormData();
+  formData.append('Representation-Content', imgData, 'asset');
+  formData.append(
+    'Representation-Data',
+    JSON.stringify({ type: file.mimetype })
+  );
+
+  const options:any = {
+    method: 'post',
+    headers: {
+      'x-api-key': process.env.API_KEY,
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': `multipart/form-data; boundary=${formData.getBoundary()}`,
+    },
+    url: `${baseURL}/${libraryUrn}/representations/content`,
+    data: formData,
+  }
+
+  try{
+    const response = await axios(options);
+    return response.data;
+  }catch(e){
+    console.log('impossible to upload');
+    console.log(e);
+    throw e;
+  }
+}
+
+const createElement = async (libraryUrn, file, thumbnail, req) =>{
+    const elementData = {
+      name: file.originalname,
+      type: 'application/vnd.adobe.element.image+dcx',
+      client: {
+        deviceId: 'Device ID',
+        device: 'Device name',
+        app: 'App name'
+      },
+      representations: [
+        {
+          name: file.originalname,
+          type: file.mimetype,
+          relationship: 'rendition',
+          'storage_href': thumbnail.storage_href,
+          'content_length': thumbnail.content_length,
+          etag: thumbnail.etag,
+          md5: thumbnail.md5,
+          version: thumbnail.version
+        },
+      ]
+    }
+    console.log(elementData);
+    const options:any = {
+      method: 'post',
+      headers: {
+        'x-api-key': process.env.API_KEY,
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      url: `${baseURL}/${libraryUrn}/elements`,
+      data: elementData,
+    };
+    console.log(options);
+    try{
+      const response = await axios(options);
+      return response.data;
+    }catch(e){
+      console.log(e.message);
+      return 'error';
+    }
+}
+
+const insertElement = async (req,res) =>{
+  const body:any = await new Promise((resolve,reject) => {
+    upload.single('file')(req, res , (err:any) => {
+      if(err)reject(err);
+      console.log(req);
+      resolve({ file:req.file, libraryUrn:req.body.id });
+    })
+  });
+  let thumbnail;
+  /*
+    first upload image file
+  */
+  try{
+    thumbnail = await uploadAsset(body.libraryUrn, body.file, req);
+    console.log(thumbnail);
+  }catch(e){
+    console.log('error');
+    console.log(e.message);
+    res.send('error');
+  }
+  /*
+    create asset object and insert to server
+  */
+  try{
+    const responseJson = await createElement(body.libraryUrn, body.file, thumbnail, req);
+    console.log(responseJson);
+    res.send('success');
+  }catch(e){
+    console.log(e.message);
+    res.send('error');
+  }
+}
+
+/*
+  branch to each functions. it depends on url and method
+*/
+
+export default async function handler(req:NextApiRequest,res:NextApiResponse,next){
+  console.log(req.method);
+  const id = req.query.id;
+  console.log(id);
+  if(req.method==='POST'){
     switch(id){
-      case 'login':
-        loginAdobeCC(req,res);
-        break;
-
-      case 'callback':
-        await callbackLogin(req,res);
-        break;
-
-      case 'element':
-        await getElement(req,res);
-        break;
-
       case 'element-represent':
         await getElementRepresent(req,res);
         break;
 
-      case 'cc-libraries-images':
-        await getImage(req,res);
+      case 'upload':
+        await insertElement(req,res);
         break;
 
       case 'get-libraries-file':
@@ -173,4 +311,31 @@ export default async function handler(req:NextApiRequest,res:NextApiResponse){
         otherInquiry(req,res);
         break;
     }
+  }else{  
+    switch(id){
+      case 'login':
+        loginAdobeCC(req,res);
+        break;
+
+      case 'logout':
+        logoutAdobeCC(req,res);
+        break;
+
+      case 'callback':
+        await callbackLogin(req,res);
+        break;
+
+      case 'element':
+        await getElement(req,res);
+        break;
+
+      case 'cc-libraries-images':
+        await getImage(req,res);
+        break;
+
+      default:
+        otherInquiry(req,res);
+        break;
+    }
+  }
 }

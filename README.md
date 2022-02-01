@@ -14,7 +14,6 @@ this isn't good exmaple I suppose but I hope it can help for some developers.
 this sample based on ejs and Express not React but to me it was really helpful to understand Adobe Creative Cloud Libraries API.
 I strongly recommend to read it before launch my code.
 
-# what user this code for
 you need basic knowledge below
 
 1. Next.js
@@ -22,7 +21,6 @@ you need basic knowledge below
 3. Node.js
 
 4. html css
-
 
 ## how does it run
 
@@ -63,7 +61,7 @@ some asset(like XD component file)has more than two kind of representations.(PNG
 and spot color data has only json data(it doesn't have specific image).
 Creative Cloud Libraries API can deal many kind of file, but I haven't checked all of files yet.
 
-## how code runs server briefly
+## how code runs server
 
 1. #### custom server
 to run https server on local , you have to use custom server, I built it in server directory.

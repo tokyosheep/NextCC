@@ -6,8 +6,7 @@ const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-// const port = parseInt(process.env.PORT || '3000');
-const port = '3000';
+const port = '3000';//port number
 const host = '0.0.0.0';
 
 const app = next({
@@ -15,6 +14,9 @@ const app = next({
 });
 const handle = app.getRequestHandler();
 
+/*
+read ceritificate file
+*/
 const options = {
     key: fs.readFileSync('./localhost-key.pem'),
     cert: fs.readFileSync('./localhost.pem')

@@ -4,6 +4,10 @@ import { useAppDispatch} from '../redux/app/hooks';
 import { setLibrary } from '../redux/features/libraries/librarySlice';
 import { setLibraries } from '../redux/features/libraries/librariesSlice';
 
+/*
+after logout account. you'll access here.
+*/
+
 const Logout = () =>{
     const dispatch = useAppDispatch();
     useMemo(() => {

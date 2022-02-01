@@ -10,6 +10,7 @@ import multer from 'multer';
 const upload = multer ({ dest: './temp' });
 /*
 multer makes img file from input form on browser side available
+brower side can't access local file directory. you need multer to access local
 */
 
 const dir_home = process.env[process.platform == `win32` ? `USERPROFILE` : `HOME`];
@@ -33,8 +34,10 @@ const logoutAdobeCC = async (req,res) => {
 }
 
 const loginAdobeCC = async (req,res) => {
+  // jumpo to login page on Adobe server
   try{
     res.redirect(307,`https://ims-na1.adobelogin.com/ims/authorize/v2?client_id=${process.env.API_KEY}&scope=${scopes}&response_type=code&redirect_uri=${redirectUri}`);
+    /* if you success to login, you'll jump to callback page */
   }catch(e){
     console.log(e);
     res.status(500).send({ error: 'failed to fetch data' });

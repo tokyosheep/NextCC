@@ -32,7 +32,7 @@ project
 
 you can read more detail about console [here.](https://www.adobe.io/developer-console/docs/guides/getting-started/)
 
-if you create your project , get your Client ID (API key) and Client Secret (API secret) , and fill key in .ext.example file as an environment variables
+if you create your project, get your Client ID (API key) and Client Secret (API secret), and fill key in .ext.example file as an environment variables
 and rename .ext.example to .ext file.
 
 you have to run https(not http) server so you need certificates. install [mkcert](https://github.com/FiloSottile/mkcert) and generate certificates.
@@ -44,10 +44,8 @@ and access to "https://localhost:3000/" you'll see how code runs.
 once you login CC, you'll see your libraries on browser. each library has their assets.
 click the button "get representations" then it shows asset's details.
 
-[here](https://medium.com/adobetech/node-js-oauth-2-0-integration-with-creative-cloud-libraries-api-a7b2b2992897)
-
-**please check the .gitignore . it inculdes localhost(certificate file) and .env file or not**
-do not upload these files. it must be confidential files.
+please check the .gitignore. it inculdes localhost(certificate file) and .env file.
+do not upload localhost and .env files. it must be confidential files.
 
 ## basic functions
 
@@ -69,7 +67,7 @@ Creative Cloud Libraries API can deal many kind of file, but I haven't checked a
 
 1. #### custom server
 to run https server on local , you have to use custom server, I built it in server directory.
-if you want to insert middleware or something , customize the file.
+if you want to insert middleware or something, customize the file.
 [detail is here](https://nextjs.org/docs/advanced-features/custom-server)
 
 2. #### server side

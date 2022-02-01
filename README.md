@@ -38,7 +38,7 @@ you have to run https(not http) server so you need certificates. install [mkcert
 install node_modules. typeing "npm install" in this directory. 
 
 finally you can run server. typing "npm run dev" and server will be running.
-and access to "https://localhost:3000/" you'll see how code runs.
+and access to https://localhost:3000/ you'll see how code runs.
 once you login CC, you'll see your libraries on browser. each library has their assets.
 click the button "get representations" then it shows asset's details.
 

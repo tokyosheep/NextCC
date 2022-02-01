@@ -4,7 +4,7 @@ this is an example of how to write Adobe Creative Cloud Libraries API on Next.js
 Creative Cloud Libraries API can connec CC server through OAuth authorization.
 user can see its own libraries. even it can upload image and get asset.
 but I think many developers are curious to run API on React base system. 
-this isn't good exmaple I suppose but I hope it can help for some developers. 
+I hope it can help for some developers. 
 
 **I refered to the sample code amandahuarng wrote**
  
@@ -22,7 +22,7 @@ you need basic knowledge below
 
 4. html css
 
-## how does it run
+## How does it run
 
 [first you need to register Adobe console as a developer](https://www.adobe.io/console)
 after register acoound , create project. you can check how create your Creative Cloud Libraries API 
@@ -45,7 +45,7 @@ click the button "get representations" then it shows asset's details.
 please check the .gitignore. it inculdes localhost(certificate file) and .env file.
 do not upload localhost and .env files. it must be confidential files.
 
-## basic functions
+## Basic functions
 
 Creative Cloud Libraries API has many Library Services. for now I built these below
 
@@ -61,14 +61,14 @@ some asset(like XD component file)has more than two kind of representations.(PNG
 and spot color data has only json data(it doesn't have specific image).
 Creative Cloud Libraries API can deal many kind of file, but I haven't checked all of files yet.
 
-## how code runs server
+## How does code run server
 
-1. #### custom server
+1. #### Custom server
 to run https server on local , you have to use custom server, I built it in server directory.
 if you want to insert middleware or something, customize the file.
 [detail is here](https://nextjs.org/docs/advanced-features/custom-server)
 
-2. #### server side
+2. #### Server side
 directory in pages -> api -> ccAccess -> "[id].ts" 
 this file receives access from browser side through fetch. and it branches each function which depends on URL and method.
 

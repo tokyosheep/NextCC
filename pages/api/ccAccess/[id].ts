@@ -16,6 +16,7 @@ brower side can't access local file directory. you need multer to access local
 const dir_home = process.env[process.platform == `win32` ? `USERPROFILE` : `HOME`];
 const dir_desktop = path.join(dir_home, `Desktop`);//デスクトップパス
 
+/* read API KET as an environment variables */
 dotenv.config();
 
 const baseURL = 'https://cc-libraries.adobe.io/api/v1/libraries';

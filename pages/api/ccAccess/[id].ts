@@ -6,9 +6,10 @@ import fs from 'fs';
 import path from 'path';
 import FormData from 'form-data';
 import multer from 'multer';
+
 const upload = multer ({ dest: './temp' });
 /*
- multer makes img file from input form on browser side available
+multer makes img file from input form on browser side available
 */
 
 const dir_home = process.env[process.platform == `win32` ? `USERPROFILE` : `HOME`];

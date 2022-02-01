@@ -1,5 +1,5 @@
 import { LibraryProps, ElementProps, Representation, RepresetationColor } from '../redux/features/libraries/librarySlice';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { getFormat } from '../fileSystem/getFormar';
 
 import { ColorBox } from './parts/colorBox';

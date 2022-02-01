@@ -1,6 +1,10 @@
 import { useState, useRef } from 'react';
 import { useAppSelector } from '../redux/app/hooks';
 
+/*
+upload your image on CC server.
+*/
+
 const UploadCompo = () =>{
     const libraries = useAppSelector(state => state.libraries.value);
     console.log(libraries);

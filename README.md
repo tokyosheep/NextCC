@@ -65,7 +65,7 @@ some asset(like XD component file)has more than two kind of representations.(PNG
 and spot color data has only json data(it doesn't have specific image).
 Creative Cloud Libraries API can deal many kind of file, but I haven't checked all of files yet.
 
-## basic code
+## how code runs server briefly
 
 1. #### custom server
 to run https server on local , you have to use custom server, I built it in server directory.
@@ -74,5 +74,13 @@ if you want to insert middleware or something , customize the file.
 
 2. #### server side
 directory in pages -> api -> ccAccess -> "[id].ts" 
-this file receives access from browser side. and it branches each function depends on URL and method.
+this file receives access from browser side. and it branches each function which depends on URL and method.
 
+more details , see comment in codes.
+if you need more basic knowledge refer to links below.
+
+1. [Next.js](https://nextjs.org/)
+
+2. [Creative Cloud API tutorial](https://www.adobe.io/creative-cloud-libraries/docs/integrate/tutorials/quick-start-nodejs/)
+
+3. [Creative Cloud API Reference](https://www.adobe.io/creative-cloud-libraries/docs/api/)
